@@ -54,6 +54,12 @@
                 <artifactId>simple-jupiter-serialization-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>simple-jupiter-transport-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- ### transport impl: end -->
             <!-- ## optional dependency: end -->
             <!-- # jupiter module dependency: end -->
