@@ -5,21 +5,28 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.simple</groupId>
-        <artifactId>simple-jupiter</artifactId>
+        <artifactId>simple-jupiter-transport</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>simple-jupiter-transport</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>simpe-jupiter-transport-api</module>
-        <module>simple-jupiter-transport-netty</module>
-    </modules>
+    <artifactId>simpe-jupiter-transport-api</artifactId>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>simple-jupiter-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>simple-jupiter-serialization-api</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

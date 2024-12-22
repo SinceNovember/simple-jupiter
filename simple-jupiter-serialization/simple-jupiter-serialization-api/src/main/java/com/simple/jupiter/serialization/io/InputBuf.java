@@ -1,4 +1,4 @@
-package com.simple.jupiter.io;
+package com.simple.jupiter.serialization.io;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
