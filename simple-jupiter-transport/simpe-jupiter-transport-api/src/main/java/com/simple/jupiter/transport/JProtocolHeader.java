@@ -81,7 +81,7 @@ public class JProtocolHeader {
         // sign 低地址4位
         this.messageCode = (byte) (sign & 0x0f);
         // sign 高地址4位, 先转成无符号int再右移4位
-        this.serializerCode = (byte) ((((int) sign) & 0xff) >> 4);
+        this.serializerCode = (byte) (((int)(sign) & 0xff) >> 4);
     }
 
     public byte messageCode() {
@@ -125,5 +125,10 @@ public class JProtocolHeader {
                 ", id=" + id +
                 ", bodySize=" + bodySize +
                 '}';
+    }
+
+    public static void main(String[] args) {
+        byte s = 0b01011111;
+        System.out.println(s);
     }
 }
