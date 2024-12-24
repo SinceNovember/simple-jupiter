@@ -12,7 +12,7 @@
     <artifactId>simple-jupiter-transport</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>simpe-jupiter-transport-api</module>
+        <module>simple-jupiter-transport-api</module>
         <module>simple-jupiter-transport-netty</module>
     </modules>
 
