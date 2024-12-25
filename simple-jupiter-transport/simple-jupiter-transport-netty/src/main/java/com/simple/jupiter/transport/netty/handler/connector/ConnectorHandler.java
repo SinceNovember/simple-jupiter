@@ -1,10 +1,9 @@
-package com.simple.jupiter.transport.netty.handler.acceptor;
+package com.simple.jupiter.transport.netty.handler.connector;
 
-import com.simple.jupiter.transport.Status;
-import com.simple.jupiter.transport.channel.JChannel;
+import java.io.IOException;
 import com.simple.jupiter.transport.netty.channel.NettyChannel;
-import com.simple.jupiter.transport.payload.JRequestPayload;
-import com.simple.jupiter.transport.processor.ProviderProcessor;
+import com.simple.jupiter.transport.payload.JResponsePayload;
+import com.simple.jupiter.transport.processor.ConsumerProcessor;
 import com.simple.jupiter.util.Signal;
 import com.simple.jupiter.util.StackTraceUtil;
 import com.simple.jupiter.util.internal.logging.InternalLogger;
@@ -17,51 +16,28 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.DecoderException;
 import io.netty.util.ReferenceCountUtil;
 
-import java.io.IOException;
-import java.security.Provider;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @ChannelHandler.Sharable
-public class AcceptorHandler extends ChannelInboundHandlerAdapter {
+public class ConnectorHandler extends ChannelInboundHandlerAdapter {
 
-    private static final InternalLogger logger = InternalLoggerFactory.getInstance(AcceptorHandler.class);
+    private static final InternalLogger logger = InternalLoggerFactory.getInstance(ConnectorHandler.class);
 
-    private static final AtomicInteger channelCounter = new AtomicInteger(0);
+    private ConsumerProcessor processor;
 
-    private ProviderProcessor processor;
-
+    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Channel ch = ctx.channel();
 
-        if (msg instanceof JRequestPayload) {
-            JChannel jChannel = NettyChannel.attachChannel(ch);
+        if (msg instanceof JResponsePayload) {
             try {
-                processor.handleRequest(jChannel, (JRequestPayload) msg);
+                processor.handleResponse(NettyChannel.attachChannel(ch), (JResponsePayload) msg);
             } catch (Throwable t) {
-                processor.handleException(jChannel, (JRequestPayload) msg, Status.SERVER_ERROR, t);
+                logger.error("An exception was caught: {}, on {} #channelRead().", StackTraceUtil.stackTrace(t), ch);
             }
         } else {
             logger.warn("Unexpected message type received: {}, channel: {}.", msg.getClass(), ch);
+
             ReferenceCountUtil.release(msg);
         }
-    }
-
-    @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        int count = channelCounter.incrementAndGet();
-
-        logger.info("Connects with {} as the {}th channel.", ctx.channel(), count);
-
-        super.channelActive(ctx);
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        int count = channelCounter.getAndDecrement();
-
-        logger.warn("Disconnects with {} as the {}th channel.", ctx.channel(), count);
-
-        super.channelInactive(ctx);
     }
 
     @Override
@@ -99,7 +75,7 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
 
             ch.close();
         } else if (cause instanceof IOException) {
-            logger.error("An I/O exception was caught: {}, force to close channel: {}.", StackTraceUtil.stackTrace(cause), ch);
+            logger.error("I/O exception was caught: {}, force to close channel: {}.", StackTraceUtil.stackTrace(cause), ch);
 
             ch.close();
         } else if (cause instanceof DecoderException) {
@@ -111,12 +87,11 @@ public class AcceptorHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    public ProviderProcessor processor() {
+    public ConsumerProcessor processor() {
         return processor;
     }
 
-    public void processor(ProviderProcessor processor) {
+    public void processor(ConsumerProcessor processor) {
         this.processor = processor;
     }
-
 }

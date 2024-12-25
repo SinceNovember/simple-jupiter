@@ -6,6 +6,7 @@ import com.simple.jupiter.transport.JProtocolHeader;
 import com.simple.jupiter.transport.channel.JChannel;
 import com.simple.jupiter.transport.channel.JFutureListener;
 import com.simple.jupiter.transport.netty.alloc.AdaptiveOutputBufAllocator;
+import com.simple.jupiter.transport.netty.handler.connector.ConnectionWatchdog;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufOutputStream;

@@ -15,7 +15,8 @@
  */
 package com.simple.jupiter.transport;
 
-import org.jupiter.common.util.Requires;
+
+import com.simple.jupiter.util.Requires;
 
 /**
  * Unresolved address.
