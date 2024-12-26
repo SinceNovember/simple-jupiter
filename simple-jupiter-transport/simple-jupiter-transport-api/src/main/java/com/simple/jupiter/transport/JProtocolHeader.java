@@ -127,8 +127,4 @@ public class JProtocolHeader {
                 '}';
     }
 
-    public static void main(String[] args) {
-        byte s = 0b01011111;
-        System.out.println(s);
-    }
 }
