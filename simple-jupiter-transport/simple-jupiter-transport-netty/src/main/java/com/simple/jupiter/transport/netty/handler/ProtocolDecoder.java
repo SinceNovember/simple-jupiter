@@ -1,9 +1,20 @@
+/*
+ * Copyright (c) 2015 The Jupiter Project
+ *
+ * Licensed under the Apache License, version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.simple.jupiter.transport.netty.handler;
 
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.List;
-import com.simple.jupiter.serialization.io.InputBuf;
 import com.simple.jupiter.transport.JProtocolHeader;
 import com.simple.jupiter.transport.exception.IoSignals;
 import com.simple.jupiter.transport.payload.JRequestPayload;
@@ -12,9 +23,11 @@ import com.simple.jupiter.util.Signal;
 import com.simple.jupiter.util.SystemClock;
 import com.simple.jupiter.util.SystemPropertyUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ReplayingDecoder;
+
+
+import java.util.List;
 
 /**
  * <pre>
@@ -41,7 +54,7 @@ import io.netty.handler.codec.ReplayingDecoder;
  *
  * @author jiachun.fjc
  */
-public class LowCopyProtocolDecoder extends ReplayingDecoder<LowCopyProtocolDecoder.State> {
+public class ProtocolDecoder extends ReplayingDecoder<ProtocolDecoder.State> {
 
     // 协议体最大限制, 默认5M
     private static final int MAX_BODY_SIZE = SystemPropertyUtil.getInt("jupiter.io.decoder.max.body.size", 1024 * 1024 * 5);
@@ -53,7 +66,7 @@ public class LowCopyProtocolDecoder extends ReplayingDecoder<LowCopyProtocolDeco
      */
     private static final boolean USE_COMPOSITE_BUF = SystemPropertyUtil.getBoolean("jupiter.io.decoder.composite.buf", false);
 
-    public LowCopyProtocolDecoder() {
+    public ProtocolDecoder() {
         super(State.MAGIC);
         if (USE_COMPOSITE_BUF) {
             setCumulator(COMPOSITE_CUMULATOR);
@@ -87,11 +100,12 @@ public class LowCopyProtocolDecoder extends ReplayingDecoder<LowCopyProtocolDeco
                         break;
                     case JProtocolHeader.REQUEST: {
                         int length = checkBodySize(header.bodySize());
-                        ByteBuf bodyByteBuf = in.readRetainedSlice(length);
+                        byte[] bytes = new byte[length];
+                        in.readBytes(bytes);
 
                         JRequestPayload request = new JRequestPayload(header.id());
                         request.timestamp(SystemClock.millisClock().now());
-                        request.inputBuf(header.serializerCode(), new NettyInputBuf(bodyByteBuf));
+                        request.bytes(header.serializerCode(), bytes);
 
                         out.add(request);
 
@@ -99,11 +113,12 @@ public class LowCopyProtocolDecoder extends ReplayingDecoder<LowCopyProtocolDeco
                     }
                     case JProtocolHeader.RESPONSE: {
                         int length = checkBodySize(header.bodySize());
-                        ByteBuf bodyByteBuf = in.readRetainedSlice(length);
+                        byte[] bytes = new byte[length];
+                        in.readBytes(bytes);
 
                         JResponsePayload response = new JResponsePayload(header.id());
                         response.status(header.status());
-                        response.inputBuf(header.serializerCode(), new NettyInputBuf(bodyByteBuf));
+                        response.bytes(header.serializerCode(), bytes);
 
                         out.add(response);
 
@@ -127,40 +142,6 @@ public class LowCopyProtocolDecoder extends ReplayingDecoder<LowCopyProtocolDeco
             throw IoSignals.BODY_TOO_LARGE;
         }
         return size;
-    }
-
-    static final class NettyInputBuf implements InputBuf {
-
-        private final ByteBuf byteBuf;
-
-        NettyInputBuf(ByteBuf byteBuf) {
-            this.byteBuf = byteBuf;
-        }
-
-        @Override
-        public InputStream inputStream() {
-            return new ByteBufInputStream(byteBuf); // should not be called more than once
-        }
-
-        @Override
-        public ByteBuffer nioByteBuffer() {
-            return byteBuf.nioBuffer(); // should not be called more than once
-        }
-
-        @Override
-        public int size() {
-            return byteBuf.readableBytes();
-        }
-
-        @Override
-        public boolean hasMemoryAddress() {
-            return byteBuf.hasMemoryAddress();
-        }
-
-        @Override
-        public boolean release() {
-            return byteBuf.release();
-        }
     }
 
     enum State {

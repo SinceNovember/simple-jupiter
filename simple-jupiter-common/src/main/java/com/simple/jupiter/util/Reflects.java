@@ -20,7 +20,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
-import javafx.util.Pair;
 
 /**
  * Static utility methods pertaining to reflection.
@@ -77,15 +76,6 @@ public final class Reflects {
             Double.TYPE
     };
 
-    /**
-     * Invokes the underlying method, fast invoke using ASM.
-     *
-     * @param obj            the object the underlying method is invoked from
-     * @param methodName     the method name this object
-     * @param parameterTypes the parameter types for the method this object
-     * @param args           the arguments used for the method call
-     * @return the result of dispatching the method represented by this object on {@code obj} with parameters
-     */
     public static Object fastInvoke(Object obj, String methodName, Class<?>[] parameterTypes, Object[] args) {
         FastMethodAccessor accessor = FastMethodAccessor.get(obj.getClass());
         return accessor.invoke(obj, methodName, parameterTypes, args);

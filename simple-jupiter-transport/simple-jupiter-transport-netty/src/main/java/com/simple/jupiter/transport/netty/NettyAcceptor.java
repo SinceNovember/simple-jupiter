@@ -86,6 +86,11 @@ public abstract class NettyAcceptor implements JAcceptor {
     }
 
     @Override
+    public ProviderProcessor processor() {
+        return processor;
+    }
+
+    @Override
     public SocketAddress localAddress() {
         return localAddress;
     }
