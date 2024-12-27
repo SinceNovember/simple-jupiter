@@ -12,6 +12,7 @@
         <module>simple-jupiter-common</module>
         <module>simple-jupiter-serialization</module>
         <module>simple-jupiter-transport</module>
+        <module>simple-jupiter-registry</module>
     </modules>
 
     <properties>
