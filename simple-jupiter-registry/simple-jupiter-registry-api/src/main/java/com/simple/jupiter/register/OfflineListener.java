@@ -1,4 +1,4 @@
-package com.simple.jupiter;
+package com.simple.jupiter.register;
 
 /**
  * Provider offline notification.
