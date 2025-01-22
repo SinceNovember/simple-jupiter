@@ -17,6 +17,7 @@ package com.simple.jupiter.rpc.consumer.processor;
 
 
 import com.simple.jupiter.rpc.JResponse;
+import com.simple.jupiter.rpc.consumer.processor.task.MessageTask;
 import com.simple.jupiter.rpc.executor.CloseableExecutor;
 import com.simple.jupiter.transport.channel.JChannel;
 import com.simple.jupiter.transport.payload.JResponsePayload;

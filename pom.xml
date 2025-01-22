@@ -14,6 +14,7 @@
         <module>simple-jupiter-transport</module>
         <module>simple-jupiter-registry</module>
         <module>simple-jupiter-rpc</module>
+        <module>simple-jupiter-montior</module>
     </modules>
 
     <properties>

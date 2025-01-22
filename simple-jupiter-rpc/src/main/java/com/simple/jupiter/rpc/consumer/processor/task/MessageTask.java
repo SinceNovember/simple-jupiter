@@ -1,6 +1,7 @@
 package com.simple.jupiter.rpc.consumer.processor.task;
 
 import com.simple.jupiter.rpc.JResponse;
+import com.simple.jupiter.rpc.consumer.future.DefaultInvokeFuture;
 import com.simple.jupiter.rpc.exception.JupiterSerializationException;
 import com.simple.jupiter.rpc.model.metadata.ResultWrapper;
 import com.simple.jupiter.serialization.Serializer;
@@ -53,5 +54,7 @@ public class MessageTask implements Runnable {
             wrapper.setError(new JupiterSerializationException(t));
         }
         _response.result(wrapper);
+
+        DefaultInvokeFuture.received(channel, _response);
     }
 }

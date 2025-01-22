@@ -1,6 +1,7 @@
 package com.simple.jupiter.rpc;
 
 import com.simple.jupiter.register.*;
+import com.simple.jupiter.rpc.consumer.processor.DefaultConsumerProcessor;
 import com.simple.jupiter.rpc.model.metadata.ServiceMetadata;
 import com.simple.jupiter.transport.*;
 import com.simple.jupiter.transport.channel.JChannelGroup;
