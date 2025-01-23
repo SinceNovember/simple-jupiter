@@ -15,6 +15,7 @@
         <module>simple-jupiter-registry</module>
         <module>simple-jupiter-rpc</module>
         <module>simple-jupiter-montior</module>
+        <module>simple-jupiter-extension</module>
     </modules>
 
     <properties>
@@ -71,6 +72,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>simple-jupiter-transport-netty</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>simple-jupiter-rpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- ### transport impl: end -->
